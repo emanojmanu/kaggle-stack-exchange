@@ -1,3 +1,4 @@
+import datetime
 import pandas as pd
 from html2text import html2text
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -58,3 +59,14 @@ def tf_idf_prediction(freq_list, words_list, threshold):
         res.append(words_above_thresh)
 
     return res
+
+
+def make_predictions_from_tag_list(physics_df, tags_list, csv_name='submission.csv'):
+    if not csv_name:
+        csv_name = 'submission' + datetime.datetime.now().isoformat()[:-7] + '.csv'
+    submission = []
+    for i, words in enumerate(tags_list):
+        submission.append((physics_df.id.iloc[i], ' '.join(words)))
+    sub = pd.DataFrame(submission)
+    sub.columns = ['id', 'tags']
+    sub.to_csv(csv_name, quoting=1, index=False)
